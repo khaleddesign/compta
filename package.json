@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "seed:test": "tsx scripts/seed-test-data.ts",
     "test:sage-export": "tsx scripts/test-sage-export.ts",
-    "test:workflow": "tsx scripts/test-workflow-complet.ts"
+    "test:workflow": "tsx scripts/test-workflow-complet.ts",
+    "test:services": "tsx scripts/test-services.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
