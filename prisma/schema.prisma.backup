@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modèle pour les factures uploadées
+model Facture {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Fichier
+  fileName          String
+  fileUrl           String
+  fileSize          Int
+  mimeType          String
+
+  // Statut du traitement
+  status            FactureStatus @default(UPLOADED)
+
+  // Données OCR (Azure)
+  ocrData           Json?
+  ocrProcessedAt    DateTime?
+
+  // Analyse IA (Claude)
+  aiAnalysis        Json?
+  aiProcessedAt     DateTime?
+
+  // Données extraites
+  fournisseur       String?
+  numeroFacture     String?
+  dateFacture       DateTime?
+  dateEcheance      DateTime?
+  montantHT         Float?
+  montantTVA        Float?
+  montantTTC        Float?
+  tauxTVA           Float?
+
+  // Export Sage
+  sageExported      Boolean @default(false)
+  sageExportedAt    DateTime?
+  sageExportPath    String?
+
+  // Lignes comptables
+  lignesComptables  LigneComptable[]
+
+  // Métadonnées
+  metadata          Json?
+  errors            Json?
+
+  @@index([status])
+  @@index([dateFacture])
+  @@index([fournisseur])
+}
+
+// Modèle pour les lignes comptables
+model LigneComptable {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+
+  factureId       String
+  facture         Facture  @relation(fields: [factureId], references: [id], onDelete: Cascade)
+
+  // Données comptables
+  numeroCompte    String
+  libelleCompte   String
+  debit           Float    @default(0)
+  credit          Float    @default(0)
+  libelle         String
+
+  // Analytique (optionnel)
+  codeAnalytique  String?
+
+  // Ordre d'affichage
+  ordre           Int      @default(0)
+
+  @@index([factureId])
+}
+
+// Statuts possibles pour une facture
+enum FactureStatus {
+  UPLOADED          // Fichier uploadé
+  OCR_PENDING       // En attente d'OCR
+  OCR_PROCESSING    // OCR en cours
+  OCR_COMPLETED     // OCR terminé
+  AI_PENDING        // En attente d'analyse IA
+  AI_PROCESSING     // Analyse IA en cours
+  AI_COMPLETED      // Analyse IA terminée
+  VALIDATION_NEEDED // Nécessite validation manuelle
+  VALIDATED         // Validé
+  EXPORTED          // Exporté vers Sage
+  ERROR             // Erreur
+}
