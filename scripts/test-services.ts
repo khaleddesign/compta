@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { TextractClient } from '@aws-sdk/client-textract';
 import Anthropic from '@anthropic-ai/sdk';
 
