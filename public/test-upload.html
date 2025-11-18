@@ -3,16 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Upload Factures - Comptabilité Automation</title>
+  <title>Upload Facture - Test</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
@@ -20,96 +15,52 @@
       justify-content: center;
       padding: 20px;
     }
-
     .container {
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      padding: 40px;
       max-width: 600px;
       width: 100%;
-      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-
     h1 {
-      color: #1a202c;
-      font-size: 28px;
+      color: #333;
       margin-bottom: 10px;
-      text-align: center;
+      font-size: 28px;
     }
-
     .subtitle {
-      color: #718096;
-      text-align: center;
+      color: #666;
       margin-bottom: 30px;
       font-size: 14px;
     }
-
-    .upload-area {
-      border: 2px dashed #cbd5e0;
+    .upload-zone {
+      border: 3px dashed #667eea;
       border-radius: 12px;
-      padding: 40px 20px;
+      padding: 40px;
       text-align: center;
-      transition: all 0.3s ease;
       cursor: pointer;
-      margin-bottom: 20px;
+      transition: all 0.3s;
+      background: #f8f9ff;
     }
-
-    .upload-area:hover {
-      border-color: #667eea;
-      background: #f7fafc;
+    .upload-zone:hover {
+      border-color: #764ba2;
+      background: #f0f2ff;
     }
-
-    .upload-area.dragover {
-      border-color: #667eea;
-      background: #edf2f7;
+    .upload-zone.dragover {
+      border-color: #764ba2;
+      background: #e8ebff;
+      transform: scale(1.02);
     }
-
     .upload-icon {
       font-size: 48px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
-
-    .upload-text {
-      color: #4a5568;
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .upload-hint {
-      color: #a0aec0;
-      font-size: 12px;
-    }
-
     input[type="file"] {
       display: none;
     }
-
-    .file-info {
-      background: #f7fafc;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-      display: none;
-    }
-
-    .file-info.active {
-      display: block;
-    }
-
-    .file-name {
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 5px;
-    }
-
-    .file-size {
-      color: #718096;
-      font-size: 14px;
-    }
-
     button {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
@@ -117,257 +68,210 @@
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      margin-top: 20px;
+      transition: transform 0.2s;
     }
-
-    button:hover:not(:disabled) {
+    button:hover {
       transform: translateY(-2px);
     }
-
     button:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
     }
-
-    .result {
-      margin-top: 20px;
-      padding: 15px;
+    .status {
+      margin-top: 30px;
+      padding: 20px;
       border-radius: 8px;
       display: none;
     }
-
-    .result.active {
-      display: block;
+    .status.show { display: block; }
+    .status.loading {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
     }
-
-    .result.success {
-      background: #c6f6d5;
-      border: 1px solid #9ae6b4;
-      color: #22543d;
+    .status.success {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
     }
-
-    .result.error {
-      background: #fed7d7;
-      border: 1px solid #fc8181;
-      color: #742a2a;
+    .status.error {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
     }
-
-    .result-title {
-      font-weight: 600;
+    .status h3 {
       margin-bottom: 10px;
       font-size: 16px;
     }
-
-    .result-content {
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .invoice-details {
-      background: white;
-      padding: 15px;
-      border-radius: 6px;
+    .status pre {
+      background: rgba(0,0,0,0.05);
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 13px;
       margin-top: 10px;
     }
-
-    .invoice-details div {
-      padding: 5px 0;
-      border-bottom: 1px solid #e2e8f0;
+    .file-info {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: left;
     }
-
-    .invoice-details div:last-child {
-      border-bottom: none;
-    }
-
-    .invoice-details strong {
-      color: #2d3748;
-      margin-right: 8px;
-    }
-
-    .invoice-details span {
-      color: #4a5568;
-    }
-
-    .spinner {
-      border: 3px solid #f3f4f6;
-      border-top: 3px solid #667eea;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      margin-left: 10px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      display: inline-block;
+    .file-info strong {
+      color: #667eea;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📄 Test Upload Factures</h1>
-    <p class="subtitle">PDF, JPEG ou PNG - Maximum 10 MB</p>
+    <h1>📄 Upload Facture</h1>
+    <p class="subtitle">Testez le workflow OCR + IA + Export Sage</p>
 
-    <div class="upload-area" id="uploadArea">
-      <div class="upload-icon">📤</div>
-      <div class="upload-text">Cliquez ou glissez-déposez votre facture</div>
-      <div class="upload-hint">Formats acceptés: PDF, JPEG, PNG</div>
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon">📎</div>
+      <p><strong>Glissez-déposez un PDF ici</strong></p>
+      <p style="color: #999; font-size: 14px; margin-top: 10px;">ou cliquez pour sélectionner</p>
+      <input type="file" id="fileInput" accept=".pdf,application/pdf">
     </div>
 
-    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png">
-
-    <div class="file-info" id="fileInfo">
-      <div class="file-name" id="fileName"></div>
-      <div class="file-size" id="fileSize"></div>
+    <div id="fileInfo" class="file-info" style="display: none;">
+      <strong>Fichier sélectionné :</strong>
+      <div id="fileName"></div>
     </div>
 
-    <button id="uploadBtn" disabled>Sélectionnez un fichier</button>
+    <button id="uploadBtn" disabled>📤 Upload et Traiter</button>
 
-    <div class="result" id="result"></div>
+    <div id="status" class="status"></div>
   </div>
 
   <script>
-    const uploadArea = document.getElementById('uploadArea');
+    const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const status = document.getElementById('status');
     const fileInfo = document.getElementById('fileInfo');
     const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const result = document.getElementById('result');
-
     let selectedFile = null;
 
-    // Click to upload
-    uploadArea.addEventListener('click', () => {
-      fileInput.click();
-    });
+    // Click to select
+    uploadZone.addEventListener('click', () => fileInput.click());
 
-    // Drag and drop
-    uploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea.classList.add('dragover');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-      uploadArea.classList.remove('dragover');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('dragover');
-
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        handleFile(files[0]);
-      }
-    });
-
-    // File input change
+    // File selected
     fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
+      const file = e.target.files[0];
+      if (file) handleFileSelect(file);
+    });
+
+    // Drag & drop
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        handleFileSelect(file);
+      } else {
+        showStatus('error', 'Veuillez sélectionner un fichier PDF');
       }
     });
 
-    // Handle file selection
-    function handleFile(file) {
+    function handleFileSelect(file) {
       selectedFile = file;
-
-      // Display file info
-      fileName.textContent = file.name;
-      fileSize.textContent = `${(file.size / 1024).toFixed(2)} KB`;
-      fileInfo.classList.add('active');
-
-      // Enable upload button
+      fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      fileInfo.style.display = 'block';
       uploadBtn.disabled = false;
-      uploadBtn.textContent = 'Uploader la facture';
-
-      // Hide previous result
-      result.classList.remove('active');
     }
 
-    // Upload button click
     uploadBtn.addEventListener('click', async () => {
       if (!selectedFile) return;
 
-      // Disable button and show loading
       uploadBtn.disabled = true;
-      uploadBtn.innerHTML = '<span class="loading-text">Upload en cours...</span><span class="spinner"></span>';
-
-      // Hide previous result
-      result.classList.remove('active', 'success', 'error');
+      showStatus('loading', '⏳ Upload en cours...', 'Le fichier est en cours d\'envoi...');
 
       try {
-        // Create FormData
         const formData = new FormData();
         formData.append('file', selectedFile);
 
-        // Send to API
         const response = await fetch('/api/upload', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
 
         const data = await response.json();
 
-        if (response.ok && data.success) {
-          // Success
-          showResult('success', 'Succès !', `
-            <div>Fichier uploadé avec succès et traitement OCR déclenché.</div>
-            <div class="invoice-details">
-              <div><strong>ID:</strong> <span>${data.invoice.id}</span></div>
-              <div><strong>Fichier:</strong> <span>${data.invoice.fileName}</span></div>
-              <div><strong>Taille:</strong> <span>${(data.invoice.fileSize / 1024).toFixed(2)} KB</span></div>
-              <div><strong>Type:</strong> <span>${data.invoice.mimeType}</span></div>
-              <div><strong>Statut:</strong> <span>${data.invoice.status}</span></div>
-              <div><strong>URL:</strong> <span style="word-break: break-all; font-size: 12px;">${data.invoice.fileUrl}</span></div>
-            </div>
-          `);
+        if (data.success) {
+          showStatus('success', '✅ Upload réussi !',
+            `ID: ${data.invoice.id}\n` +
+            `Fichier: ${data.invoice.fileName}\n` +
+            `Status: ${data.invoice.status}\n\n` +
+            `⏳ Traitement en cours...\n` +
+            `1. OCR Textract (~3s)\n` +
+            `2. Analyse IA Claude (~3s)\n` +
+            `3. Génération écritures comptables\n\n` +
+            `Consultez les logs du serveur (npm run dev)`
+          );
 
-          // Reset form
-          selectedFile = null;
-          fileInput.value = '';
-          fileInfo.classList.remove('active');
-          uploadBtn.disabled = true;
-          uploadBtn.textContent = 'Sélectionnez un fichier';
+          // Poll status
+          pollInvoiceStatus(data.invoice.id);
         } else {
-          // Error from API
-          const errorMsg = data.error || 'Erreur inconnue';
-          const details = data.fields ? JSON.stringify(data.fields, null, 2) : '';
-          showResult('error', 'Erreur', `
-            <div>${errorMsg}</div>
-            ${details ? `<pre style="margin-top: 10px; font-size: 12px; background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto;">${details}</pre>` : ''}
-          `);
-
-          // Re-enable button
+          showStatus('error', '❌ Erreur', data.error || 'Erreur inconnue');
           uploadBtn.disabled = false;
-          uploadBtn.textContent = 'Réessayer';
         }
       } catch (error) {
-        // Network or other error
-        showResult('error', 'Erreur réseau', `
-          <div>Impossible de contacter le serveur.</div>
-          <div style="margin-top: 10px; font-size: 12px;">${error.message}</div>
-        `);
-
-        // Re-enable button
+        showStatus('error', '❌ Erreur', error.message);
         uploadBtn.disabled = false;
-        uploadBtn.textContent = 'Réessayer';
       }
     });
 
-    // Show result helper
-    function showResult(type, title, content) {
-      result.className = `result ${type} active`;
-      result.innerHTML = `
-        <div class="result-title">${type === 'success' ? '✅' : '❌'} ${title}</div>
-        <div class="result-content">${content}</div>
+    async function pollInvoiceStatus(invoiceId) {
+      let attempts = 0;
+      const maxAttempts = 20;
+
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/invoices/${invoiceId}`);
+          const data = await response.json();
+
+          if (data.invoice.status === 'AI_COMPLETED') {
+            clearInterval(interval);
+            showStatus('success', '🎉 Traitement terminé !',
+              `Fournisseur: ${data.invoice.supplierName}\n` +
+              `Montant TTC: ${data.invoice.amountTTC}€\n` +
+              `Écritures: ${data.invoice.accountingEntries?.length || 0}\n\n` +
+              `✅ Prêt pour export Sage 50`
+            );
+            uploadBtn.disabled = false;
+          } else if (data.invoice.status === 'OCR_FAILED' || data.invoice.status === 'AI_FAILED') {
+            clearInterval(interval);
+            showStatus('error', '❌ Échec du traitement', data.invoice.errorMessage || 'Erreur inconnue');
+            uploadBtn.disabled = false;
+          }
+
+          attempts++;
+          if (attempts >= maxAttempts) {
+            clearInterval(interval);
+            showStatus('error', '⏱️ Timeout', 'Le traitement prend plus de temps que prévu. Vérifiez les logs.');
+            uploadBtn.disabled = false;
+          }
+        } catch (error) {
+          console.error('Poll error:', error);
+        }
+      }, 1000);
+    }
+
+    function showStatus(type, title, message) {
+      status.className = `status ${type} show`;
+      status.innerHTML = `
+        <h3>${title}</h3>
+        ${message ? `<pre>${message}</pre>` : ''}
       `;
     }
   </script>
